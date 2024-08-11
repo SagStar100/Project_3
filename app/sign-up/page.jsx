@@ -130,7 +130,6 @@ const SignUp = () => {
                     </StyledButton>
                 </Box>
                 <Typography sx={{ paddingTop: "35px" }}>Already have an account?</Typography>
-
                 <Button
                     fullWidth
                     variant='text'
