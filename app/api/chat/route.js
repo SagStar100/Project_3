@@ -21,7 +21,7 @@ Store Information:
 
 TechStore offers a wide range of electronic devices, computer accessories, and software.
 Customers can shop online or visit one of our physical stores (if applicable).
-Our website is [TechStore Website]
+Our website is [TechStore Website].
 For technical support related to products, please visit [Tech Support Website] or contact the product manufacturer.
 
 Tone and Style:
@@ -46,6 +46,10 @@ export const POST = async (req) => {
   try {
     const { message, targetLanguage } = await req.json();
 
+    if (!message || !targetLanguage) {
+      return NextResponse.json({ error: 'Invalid input' }, { status: 400 });
+    }
+
     console.log('Original message:', message);
     console.log('Target language:', targetLanguage);
 
@@ -66,7 +70,11 @@ export const POST = async (req) => {
       ],
     });
 
-    const reply = completion.choices[0].message.content;
+    const reply = completion?.choices?.[0]?.message?.content;
+    if (!reply) {
+      throw new Error('No reply from OpenAI');
+    }
+
     console.log('Reply from OpenAI:', reply);
 
     // Translate the reply back to the original language
@@ -76,8 +84,7 @@ export const POST = async (req) => {
 
     return NextResponse.json({ reply: replyInOriginalLanguage });
   } catch (error) {
-    console.error('Translation error:', error);
+    console.error('Error:', error.message || error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 };
-
